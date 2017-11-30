@@ -42,7 +42,7 @@ constructor(
 
 ### Methods
 **getRouteData(Router, fn): void**
-> A subscriber of router.events. Data is passed through the callback, as well as the instanced Subscriber.
+> A subscriber of router.events that gets the data of the activated route. Data is passed through the callback, as well as the instanced Subscriber.
 
 Route:
 ```sh
