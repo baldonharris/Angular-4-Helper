@@ -42,7 +42,7 @@ constructor(
 
 ### Methods
 **getRouteData(Router, fn): void**
-> A subscriber of router.events that gets the data of the activated route. Data is passed through the callback, as well as the instanced Subscriber.
+> A subscriber of `router.events` that gets the data of the activated route. Data is passed through the callback, as well as the instanced Subscriber of the event.
 
 Route:
 ```sh
@@ -55,11 +55,19 @@ Route:
 
 Component:
 ```sh
-helper.getRouteData(router, (routeData, subscriber) => {
-    console.log(routeData.foo);
-    console.log(routeData.bar);
+routerSubscriber: any;
 
-    // can be called in ngOnDestroy
-    subscriber.unsubscribe();
-});
+constructor(
+    private router: Router,
+    private helper: HelperService
+) {
+    helper.getRouteData(router, (routeData, subscriber) => {
+        console.log(routeData.foo);
+        console.log(routeData.bar);
+    });
+}
+
+ngOnDestroy() {
+    this.routerSubscriber.unsubscribe();
+}
 ```
