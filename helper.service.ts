@@ -25,24 +25,31 @@ export class HelperService {
   *   as well as the subscriber variable that
   *   should be chained with unsubscribe method in the callback.
   * */
-  getRouteData(router: Router, cb): void {
-    this.routeDataSubscriber = router.events.subscribe(
-      (event) => {
-        if (event instanceof NavigationEnd === true) {
-          let url = event['url'].split('/')[1];
-          let currentRoute = _.find(router.config, {path: url});
+    getRouteData(router: Router, cb): void {
+      this.routeDataSubscriber = router.events.subscribe(
+        (event) => {
+          if (event instanceof NavigationEnd === true) {
+            const url = (event['url'] !== event['urlAfterRedirects']) ? event['urlAfterRedirects'].split('/') : event['url'].split('/');
+            let currentRoute = _.find(router.config, {path: url[1]});
 
-          if (_.has(currentRoute, 'redirectTo')) {
-            url = currentRoute.redirectTo.split('/')[1];
-            currentRoute = _.find(router.config, {path: url});
-          }
+            if (_.size(url) > 2) {
+              for (let x = 2; x < _.size(url); x++) {
+                const u = url[x];
 
-          if (_.isFunction(cb)) {
-            cb(currentRoute.data, this.routeDataSubscriber);
+                if (_.has(currentRoute, 'children')) {
+                  currentRoute = _.find(currentRoute.children, {path: u});
+                }
+              }
+            } else {
+              currentRoute = _.has(currentRoute, 'children') ? currentRoute.children[0] : currentRoute;
+            }
+
+            if (_.isFunction(cb)) {
+              cb(currentRoute.data, this.routeDataSubscriber);
+            }
           }
         }
-      }
-    );
-  }
+      );
+    }
 
 }
