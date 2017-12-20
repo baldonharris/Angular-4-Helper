@@ -64,6 +64,7 @@ constructor(
     helper.getRouteData(router, (routeData, subscriber) => {
         console.log(routeData.foo);
         console.log(routeData.bar);
+		this.routerSubscriber = subscriber;
     });
 }
 
